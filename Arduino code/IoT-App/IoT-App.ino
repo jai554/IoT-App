@@ -13,9 +13,8 @@ void setup() {
   Serial.begin(9600);
   
   gate.attach(8);
-  gate.write(0);
-  gate.write(20);
-  delay(500);
+  gate.write(45);
+  delay(1000);
   gate.write(0);
 
   // set IR as input
@@ -26,18 +25,30 @@ void setup() {
   lcd.init();
   lcd.backlight();
 
+  // Start LED input
+  pinMode(11, OUTPUT); //red
+  pinMode(12, OUTPUT); //green
+  pinMode(13, OUTPUT); //blue
+  LEDLight(255,0,0);
+
   LCD(0,0,"System Ready...");
-  LCD(3,3,"Status: CONNECTED");
 }
 
 void loop() {
+  if((digitalRead(22) == HIGH) && (GateStat == 0)){
+      LEDLight(255,0,0);
+      
+      //LCDclean();
+      LCD(0,0, "System Ready...");
+  }
   if((digitalRead(22) == LOW) && (GateStat == 0)){
     LCDclean();
     LCD(0,2, "Vehicle Detected!");
+    LEDLight(0,0,255);
 
     //delay 5 seconds to allow processing
     delay(5000);
-    
+    LCDclean();
     Serial.write('a');
   }
   if(Serial.available()>0){
@@ -45,6 +56,7 @@ void loop() {
     x = Serial.read();
     
     if(x == 'b'){
+      LEDLight(0,255,0);
       GateStat = 1;
       plate = Serial.readStringUntil('\n');
       phrase = "Welcome " + plate;
@@ -79,9 +91,7 @@ void loop() {
     gate.write(0);
 
     GateStat = 0;
-    
     LCDclean();
-    LCD(0,0, "System Ready...");
   }
 }
 
@@ -92,4 +102,10 @@ void LCD(int x, int y, String words){
 
 void LCDclean(){
   lcd.clear();
+}
+
+void LEDLight(int r, int g, int b){
+  analogWrite(11, r);
+  analogWrite(12, g);
+  analogWrite(13, b);
 }
