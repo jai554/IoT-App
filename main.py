@@ -9,6 +9,7 @@ from datetime import date
 x = ''
 plate = ''
 plateDB = ''
+emailDB = ''
 isAllowed = 1
 
 #Initialize Firebase connectivity
@@ -89,11 +90,13 @@ while True:
             for PlatesDB in resultPlates.each():
                 isAllowed = PlatesDB.val()['IsAllowed']
                 print("Is Allowed: " + str(isAllowed))
+            for PlatesDB in resultPlates.each():
+                emailDB = PlatesDB.val()['OwnedBy']
         except IndexError:
             print("Plate not found in database")
-        # #end pyrebase query
-        #
-        # #if plate matches database
+        #end pyrebase query
+
+        #if plate matches database
         if ((plateDB == plate) and (isAllowed == 1)):
             print("Gate Open")
             var = 'b'
@@ -109,7 +112,7 @@ while True:
             current_time = now.strftime("%H:%M:%S")
             day = today.strftime("%d/%m/%Y")
 
-            data = {"PlateNo":plate, "Date" : day,"Time": current_time, "IsAllowed": isAllowed}
+            data = {"PlateNo":plate, "Date" : day,"Time": current_time, "IsAllowed": isAllowed, "OwnedBy": emailDB}
             db.child("AccessHistory").push(data)
 
             time.sleep(10)
@@ -126,7 +129,7 @@ while True:
             current_time = now.strftime("%H:%M:%S")
             day = today.strftime("%d/%m/%Y")
 
-            data = {"PlateNo": plate, "Date": day, "Time": current_time, "IsAllowed": isAllowed}
+            data = {"PlateNo": plate, "Date": day, "Time": current_time, "IsAllowed": isAllowed, "OwnedBy": emailDB}
             db.child("AccessHistory").push(data)
 
             time.sleep(10)
