@@ -40,6 +40,7 @@ vid.set(10,150)
 
 while True:
     ret, frame = vid.read()
+    plate = ""
 
     if x == '':
         x = ser.read()
@@ -81,7 +82,10 @@ while True:
 
         #query pyrebase
         #search for plate numbers
-        resultPlates = db.child("CarLists").order_by_child("PlateNo").equal_to(plate).get()
+        try:
+            resultPlates = db.child("CarLists").order_by_child("PlateNo").equal_to(plate).get()
+        except IndexError:
+            print("Plate not found in database")
 
         try:
             for PlatesDB in resultPlates.each():
@@ -97,7 +101,7 @@ while True:
         #end pyrebase query
 
         #if plate matches database
-        if ((plateDB == plate) and (isAllowed == 1)):
+        if ((plateDB == plate) and (isAllowed == 1) and (plateDB != "") and (plate != "")):
             print("Gate Open")
             var = 'b'
             x = var.encode()

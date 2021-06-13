@@ -47,9 +47,9 @@ void loop() {
     LEDLight(0,0,255);
 
     //delay 5 seconds to allow processing
+    Serial.write('a');
     delay(5000);
     LCDclean();
-    Serial.write('a');
   }
   if(Serial.available()>0){
     String phrase;
@@ -63,8 +63,8 @@ void loop() {
       LCDclean();
       LCD(0,0,phrase);
 
-      delay(250);
       gate.write(95);
+      delay(3500);
     }
     if((x == 'c') && GateStat == 0){
       phrase = "   Entry blocked!   ";
@@ -81,6 +81,8 @@ void loop() {
       LCD(0,0,phrase);
       phrase = "    plate number    ";
       LCD(0,1,phrase);
+      delay(3000);
+      LCDclean();
     }
   }
   if(digitalRead(23) == LOW){
